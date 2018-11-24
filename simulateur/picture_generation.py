@@ -1,0 +1,269 @@
+import json
+from math import acos
+from math import pi
+from math import sqrt
+
+import cv2
+import numpy as np
+
+from definitions import CONFIG_PATH
+
+
+#### UTILS ####
+def length(v):
+    return sqrt(v.x ** 2 + v.y ** 2)
+
+
+def dot_product(v, w):
+    return v.x * w.x + v.y * w.y
+
+
+def determinant(v, w):
+    return v.x * w.y - v.y * w.x
+
+
+def inner_angle(v, w):
+    cosx = dot_product(v, w) / (length(v) * length(w))
+    rad = acos(cosx)  # in radians
+    return rad * 180 / pi  # returns degrees
+
+
+def angle_clockwise(A, B):
+    """
+    CAUTION on IMAGE with OPENCV, axis X and axis Y are not DIRECTLY oriented
+    :param A:
+    :param B:
+    :return:
+    """
+    inner = inner_angle(A, B)
+    det = determinant(A, B)
+    if det < 0:  # this is a property of the det. If the det < 0 then B is clockwise of A
+        return inner
+    else:  # if the det > 0 then A is immediately clockwise of B
+        return -inner
+
+
+###############
+
+configuration = json.load(open(CONFIG_PATH))
+
+
+class Point:
+    """
+    Point/Vector definition
+    """
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __add__(self, pt):
+        return Point(self.x + pt.x, self.y + pt.y)
+
+    def __sub__(self, pt):
+        return Point(self.x - pt.x, self.y - pt.y)
+
+    def __mul__(self, scalar):
+        return Point(self.x * scalar, self.y * scalar)
+
+    def __rmul__(self, scalar):
+        return Point(self.x * scalar, self.y * scalar)
+
+    def __truediv__(self, scalar):
+        return Point(self.x / scalar, self.y / scalar)
+
+    def __str__(self):
+        return '(' + str(self.x) + ',' + str(self.y) + ')'
+
+    def norm(self):
+        return np.sqrt(float(self.x) * float(self.x) + float(self.y) * float(self.y))
+
+
+def center_coordinates(start_point, end_point, radius):
+    """
+    Computes the coordinates for the center point associated with 2 points and a radius
+    :param start_point: np.array with two values (vector)
+    :param end_point: np.array with two values (vector)
+    :param radius: real positive value
+    :return: center coordinates: np.array with two values (vector)
+    """
+    vector = end_point - start_point
+    normal_vector = Point(-vector.y, vector.x)
+    normal_unitary_vector = normal_vector / normal_vector.norm()
+    middle = (start_point + end_point) / 2
+    center = middle + normal_unitary_vector * (np.sqrt(radius ** 2 - (vector.norm() / 2) ** 2))
+    center.x = int(round(center.x))
+    center.y = int(round(center.y))
+    return center
+
+
+def draw_central_dashed_arc_on_ground(img, start_point, end_point, radius, color):
+    """
+    Plot central dashed arc (curved line). See configuration file for line specifications
+    :param img: numpy.ndarray, image opened with OpenCV
+    :param start_point: Point
+    :param end_point: Point
+    :param radius: int
+    :param color: RGB numpy.array (3 colors between 0 & 255)
+    :return: numpy.ndarray drawn image
+    """
+    img_drawn = img.copy()
+    center = center_coordinates(start_point, end_point, radius)
+
+    alpha = round(180 * (configuration['dash_length_cm'] / configuration['conversion_pixel_to_cm']) / (np.pi * radius))
+    start_angles = np.arange(0, 360, alpha)
+    end_angles = np.arange(alpha, 361, alpha)
+
+    for i, couple in enumerate(zip(start_angles, end_angles)):
+        if i % 2 == 0:
+            cv2.ellipse(img_drawn, (center.x, center.y), (radius, radius), 0, couple[0], couple[1], color,
+                        thickness=int(configuration['line_width_cm'] / configuration['conversion_pixel_to_cm']))
+    return img_drawn
+
+
+def draw_lateral_complete_arcs_on_ground(img, start_point, end_point, radius, color):
+    """
+    Plot lateral complete arcs (curved lines). See configuration file for line specifications
+    :param img: numpy.ndarray, image opened with OpenCV
+    :param start_point: Point
+    :param end_point: Point
+    :param radius: int
+    :param color: RGB numpy.array (3 colors between 0 & 255)
+    :return: numpy.ndarray drawn image
+    """
+    img_drawn = img.copy()
+    center = center_coordinates(start_point, end_point, radius)
+
+    radius_left = radius + int(configuration['line_spread_cm'] / configuration['conversion_pixel_to_cm'])
+    cv2.ellipse(img_drawn, (center.x, center.y), (radius_left, radius_left), 0, 0, 360, color,
+                thickness=int(configuration['line_width_cm'] / configuration['conversion_pixel_to_cm']))
+
+    radius_right = radius - int(configuration['line_spread_cm'] / configuration['conversion_pixel_to_cm'])
+    cv2.ellipse(img_drawn, (center.x, center.y), (radius_right, radius_right), 0, 0, 360, color,
+                thickness=int(configuration['line_width_cm'] / configuration['conversion_pixel_to_cm']))
+    return img_drawn
+
+
+def draw_central_dashed_line_on_ground(img, start_point, end_point, color):
+    """
+    Plot central dashed line. See configuration file for line specifications
+    :param img: numpy.ndarray, image opened with OpenCV
+    :param start_point: Point
+    :param end_point: Point
+    :param color: RGB numpy.array (3 colors between 0 & 255)
+    :return: numpy.ndarray drawn image
+    """
+    img_drawn = img.copy()
+    vector = end_point - start_point
+    vector_normalized = vector / vector.norm()
+    segment_number = int(vector.norm() // (configuration['dash_length_cm'] / configuration['conversion_pixel_to_cm']))
+    segments_points = [start_point + i * (configuration['dash_length_cm'] / configuration['conversion_pixel_to_cm'])
+                       * vector_normalized for i in range(segment_number + 1)]
+    for i, couple in enumerate(zip(segments_points[:-1], segments_points[1:])):
+        if i % 2 == 0:
+            cv2.line(img_drawn, (int(round(couple[0].x)), int(round(couple[0].y))),
+                     (int(round(couple[1].x)), int(round(couple[1].y))),
+                     color, thickness=int(configuration['line_width_cm'] / configuration['conversion_pixel_to_cm']))
+    return img_drawn
+
+
+def draw_lateral_complete_lines_on_ground(img, start_point, end_point, color):
+    """
+    Plot lateral complete line. See configuration file for line specifications
+    :param img: numpy.ndarray, image opened with OpenCV
+    :param start_point: Point
+    :param end_point: Point
+    :param color: RGB numpy.array (3 colors between 0 & 255)
+    :return: numpy.ndarray drawn image
+    """
+    img_drawn = img.copy()
+    vector = end_point - start_point
+    vector_normalized = vector / vector.norm()
+    vector_normalized_othogonal = Point(-vector_normalized.y, vector_normalized.x)
+    width = int(configuration['line_spread_cm'] / configuration['conversion_pixel_to_cm'])
+    left_point = start_point + width * vector_normalized_othogonal
+    left_constant = left_point.y - left_point.x * vector.y / vector.x
+
+    right_point = start_point - width * vector_normalized_othogonal
+    right_constant = right_point.y - right_point.x * vector.y / vector.x
+
+    img_height = img.shape[1]
+    img_width = img.shape[0]
+
+    cv2.line(img_drawn, (int((img_height - right_constant) * vector.x / vector.y), img_height),
+             (img_width, int(img_width * vector.y / vector.x + right_constant)),
+             color, thickness=int(configuration['line_width_cm'] / configuration['conversion_pixel_to_cm']))
+
+    cv2.line(img_drawn, (int((img_height - left_constant) * vector.x / vector.y), img_height),
+             (img_width, int(img_width * vector.y / vector.x + left_constant)),
+             color, thickness=int(configuration['line_width_cm'] / configuration['conversion_pixel_to_cm']))
+
+    return img_drawn
+
+
+def compute_command_arc(start_point, end_point, radius):
+    """
+    Computes the angular command associated with an arc. Camera position is in bottom, right in the middle
+    :param start_point: Point, starting point for the arc
+    :param end_point: Point, end point for the arc
+    :param radius: real positive value
+    :return: angular command in degrees (signed, clockwise)
+    """
+    center = center_coordinates(start_point, end_point, radius)
+    y, x = np.ogrid[0: configuration['image_width'], 0: configuration['image_height']]
+    epsilon = 2
+    mask = np.abs(np.sqrt((center.x - x) ** 2 + (center.y - y) ** 2) - radius) <= epsilon
+    y_arc, x_arc = np.where(mask == True)
+
+    # computes the projection on line
+    car_position_x, car_position_y = (int(configuration['image_width'] / 2), configuration['image_height'])
+    dists_from_ligne = list(((x_arc - car_position_x) ** 2 + (y_arc - car_position_y) ** 2))
+    index_projection = dists_from_ligne.index(min(dists_from_ligne))  # output the first index, enough
+    projection_y = y_arc[index_projection]
+    projection_x = x_arc[index_projection]
+
+    # computes the destination point
+    dists = np.sqrt((x_arc - projection_x) ** 2 + (y_arc - projection_y) ** 2)
+    points_to_consider = \
+        np.where(dists <= configuration['command_distance_cm'] / configuration['conversion_pixel_to_cm'])[0]
+
+    command_x = x_arc[min(points_to_consider)]
+    command_y = y_arc[min(points_to_consider)]
+
+    destination = Point(command_x, command_y) - \
+                  Point(x_arc[-1], y_arc[-1])
+
+    vector_base = Point(1, 0)  # Computing the angle from the base
+    angular_command = angle_clockwise(vector_base, destination)
+    return angular_command
+
+
+def compute_command_line(start_point, end_point):
+    y, x = np.ogrid[0: configuration['image_width'], 0: configuration['image_height']]
+    epsilon = 1000
+    line_orientation = end_point - start_point
+    mask = np.abs((x - start_point.x) * (line_orientation.y) - (y - start_point.y) * (line_orientation.x)) <= epsilon
+    y_line, x_line = np.where(mask == True)
+
+    # computes the projection on line
+    car_position_x, car_position_y = (int(configuration['image_width'] / 2), configuration['image_height'])
+    dists_from_ligne = list(((x_line - car_position_x) ** 2 + (y_line - car_position_y) ** 2))
+    index_projection = dists_from_ligne.index(min(dists_from_ligne))  # output the first index, enough
+    projection_y = y_line[index_projection]
+    projection_x = x_line[index_projection]
+
+    # computes the destination point
+    dists = np.sqrt((x_line - projection_x) ** 2 + (y_line - projection_y) ** 2)
+    points_to_consider = \
+        np.where(dists <= configuration['command_distance_cm'] / configuration['conversion_pixel_to_cm'])[0]
+
+    command_x = x_line[min(points_to_consider)]
+    command_y = y_line[min(points_to_consider)]
+
+    destination = Point(command_x, command_y) - \
+                  Point(x_line[-1], y_line[-1])
+
+    vector_base = Point(1, 0)  # Computing the angle from the base
+    angular_command = angle_clockwise(vector_base, destination)
+
+    return angular_command

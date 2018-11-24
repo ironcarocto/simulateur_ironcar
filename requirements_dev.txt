@@ -3,3 +3,4 @@ Pillow
 numpy
 matplotlib
 pytest
+opencv-python

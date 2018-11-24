@@ -1,0 +1,9 @@
+{
+  "line_width_cm": 6,
+  "line_spread_cm" : 40,
+  "dash_length_cm" : 40,
+  "conversion_pixel_to_cm" : 0.3,
+  "image_width" : 1000,
+  "image_height": 1000,
+  "command_distance_cm" : 20
+}
