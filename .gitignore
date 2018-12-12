@@ -1,6 +1,6 @@
 .DS_Store
 .idea/
-venv/
+env/
 photos/
 __pycache__/
 .pytest_cache/
@@ -8,6 +8,11 @@ exploration/
 ground/*
 .pycharmrc
 *.egg-info
+bin/
+lib/
+models/
+pyvenv.cfg
+simulateur/__init__.pyc
 
 # exception to the rule
 !somefolder/.gitkeep
