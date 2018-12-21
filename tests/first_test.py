@@ -21,3 +21,4 @@ def test_compute_line():
     origin = Point(500, 1000)
     end = Point(600, 0)
     compute_command_line(origin, end)
+
