@@ -5,13 +5,16 @@ photos/
 __pycache__/
 .pytest_cache/
 ground/*
+exploration/
 .pycharmrc
 *.egg-info
 bin/
 lib/
 models/
 pyvenv.cfg
-simulateur/__init__.pyc
+simulator/__init__.pyc
+*.egg
+
 
 # exception to the rule
 !somefolder/.gitkeep

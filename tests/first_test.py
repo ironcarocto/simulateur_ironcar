@@ -1,5 +1,5 @@
-from simulateur.picture_generation import Point
-from simulateur.picture_generation import compute_command_line
+from simulator.image_creation import Point
+from simulator.image_creation import compute_command_line
 
 
 def test_first_to_fail():

@@ -1,82 +1,11 @@
 import json
-from math import acos
-from math import pi
-from math import sqrt
-
 import cv2
 import numpy as np
 
+from utils import angle_clockwise, Point
+
 from definitions import CONFIG_PATH
-
-
-#### UTILS ####
-def length(v):
-    return sqrt(v.x ** 2 + v.y ** 2)
-
-
-def dot_product(v, w):
-    return v.x * w.x + v.y * w.y
-
-
-def determinant(v, w):
-    return v.x * w.y - v.y * w.x
-
-
-def inner_angle(v, w):
-    cosx = dot_product(v, w) / (length(v) * length(w))
-    rad = acos(cosx)  # in radians
-    return rad * 180 / pi  # returns degrees
-
-
-def angle_clockwise(A, B):
-    """
-    CAUTION on IMAGE with OPENCV, axis X and axis Y are not DIRECTLY oriented
-    :param A:
-    :param B:
-    :return:
-    """
-    inner = inner_angle(A, B)
-    det = determinant(A, B)
-    if det < 0:  # this is a property of the det. If the det < 0 then B is clockwise of A
-        return inner
-    else:  # if the det > 0 then A is immediately clockwise of B
-        return -inner
-
-
-###############
-
 configuration = json.load(open(CONFIG_PATH))
-
-
-class Point:
-    """
-    Point/Vector definition
-    """
-
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-
-    def __add__(self, pt):
-        return Point(self.x + pt.x, self.y + pt.y)
-
-    def __sub__(self, pt):
-        return Point(self.x - pt.x, self.y - pt.y)
-
-    def __mul__(self, scalar):
-        return Point(self.x * scalar, self.y * scalar)
-
-    def __rmul__(self, scalar):
-        return Point(self.x * scalar, self.y * scalar)
-
-    def __truediv__(self, scalar):
-        return Point(self.x / scalar, self.y / scalar)
-
-    def __str__(self):
-        return '(' + str(self.x) + ',' + str(self.y) + ')'
-
-    def norm(self):
-        return np.sqrt(float(self.x) * float(self.x) + float(self.y) * float(self.y))
 
 
 def center_coordinates(start_point, end_point, radius):
