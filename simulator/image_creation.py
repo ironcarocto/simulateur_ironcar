@@ -2,7 +2,7 @@ import json
 import cv2
 import numpy as np
 
-from utils import angle_clockwise, Point
+from simulator.utils import angle_clockwise, Point
 
 from definitions import CONFIG_PATH
 configuration = json.load(open(CONFIG_PATH))

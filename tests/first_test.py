@@ -1,24 +1,28 @@
-from simulator.image_creation import Point
-from simulator.image_creation import compute_command_line
+import os
+from simulator.pictures_generation import right_direction
+import os
+import json
+
+from simulator.pictures_generation import right_direction
+
+from definitions import CONFIG_PATH, GROUND_PATH, PHOTOS_PATH
+
 
 
 def test_first_to_fail():
     # Given
+    configuration = json.load(open(CONFIG_PATH))
+    configuration['images_curve'] = 2
+    PHOTOS_PATH ='/Users/constant.bridon/Documents/IronCar/simulateur_octo/photos/'
+    images_produced_by_povray = [x for x in os.listdir(PHOTOS_PATH) if x.endswith('.png')]
+    image_number_init = len(images_produced_by_povray)
+
     # Where
+    right_direction(configuration)
+    images_produced_by_povray = [x for x in os.listdir(PHOTOS_PATH) if x.endswith('.png')]
+    image_number_end = len(images_produced_by_povray)
+
     # Then
-    assert False
-
-
-def test_compute_angle():
-    origin = Point(500, 1000)
-    end = Point(800, 0)
-    radius = 2000
-    compute_command_arc(origin, end, radius)
-
-
-
-def test_compute_line():
-    origin = Point(500, 1000)
-    end = Point(600, 0)
-    compute_command_line(origin, end)
+    image_number = image_number_end - image_number_init
+    assert image_number == 2*configuration['images_curve']
 
