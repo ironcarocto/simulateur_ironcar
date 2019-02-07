@@ -87,5 +87,8 @@ class Point:
     def __str__(self):
         return '(' + str(self.x) + ',' + str(self.y) + ')'
 
+    def __eq__(self, pt):
+        return self.x == pt.x and self.y == pt.y
+
     def norm(self):
         return np.sqrt(float(self.x) * float(self.x) + float(self.y) * float(self.y))

@@ -4,7 +4,6 @@ env/
 photos/
 __pycache__/
 .pytest_cache/
-ground/*
 exploration/
 .pycharmrc
 *.egg-info
