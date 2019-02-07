@@ -2,7 +2,7 @@ import json
 import os
 
 from definitions import CONFIG_PATH
-from simulator.pictures_generation import right_direction, points_selection
+from simulator.pictures_generation import straight, points_selection
 from utils import Point
 
 
@@ -31,6 +31,17 @@ def test_():
 
     # When
     result = points_selection((500, 500), (600, 600))
+
+    # Then
+    assert result == expected
+
+
+def test_():
+    # Given
+    CONFIG_PATH = '../configuration.json'
+    configuration = json.load(open(CONFIG_PATH))
+
+    straight(configuration)
 
     # Then
     assert result == expected

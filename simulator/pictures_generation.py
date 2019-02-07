@@ -1,8 +1,11 @@
 import json
 import os
+import re
 import subprocess
+import uuid
 
 import cv2
+import jinja2
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -51,99 +54,88 @@ def points_selection(configuration):
     return Point(origin_pt[0], origin_pt[1]), Point(end_pt[0], end_pt[1]), radius
 
 
-def right_direction(configuration):
+def straight(configuration):
     i = 0
     while True:
         origin, end, radius = points_selection(configuration)
-        cmd = int(compute_command_arc(origin, end, radius))
+        angle = int(compute_command_arc(origin, end, radius))
 
-        if int(cmd) <= 36:
+        if 72 < angle and angle >= 108:
             img = grounds[np.random.choice(range(3))]
             img_drawn = draw_central_dashed_arc_on_ground(img, origin, end, radius, (148, 252, 9))
             img_complete = draw_lateral_complete_arcs_on_ground(img_drawn, origin, end, radius, (255, 255, 255))
             img_final = 255 * np.ones((3 * img.shape[0], 4 * img.shape[1], 3), dtype='uint8')
             img_final[2 * img.shape[0]:, img.shape[1]:2 * img.shape[1], :] = img_complete
-            plt.imsave(PHOTOS_PATH + 'test.jpg', img_final)
-            command = 'povray -Ipovray_test_cob.pov.j2 Height=176 Width=240 Output_File_Name={}_cmd_{}'.format(
-                int(cmd),
-                i)
-            subprocess.run(command, shell=True, cwd=PHOTOS_PATH)
+            file_name = uuid.uuid4().hex
+            plt.imsave(PHOTOS_PATH + file_name + '.jpg', img_final)
+            img = povraytize(file_name)[80:]
+            plt.imsave(PHOTOS_PATH + '{}_angle_{}'.format(angle, i), img)
 
-            # Mirroring the image
-            img_complete = cv2.flip(img_complete, 1)
-            img_final = 255 * np.ones((3 * img.shape[0], 4 * img.shape[1], 3), dtype='uint8')
-            img_final[2 * img.shape[0]:, img.shape[1]:2 * img.shape[1], :] = img_complete
-            plt.imsave('test.jpg', img_final)
-            plt.imsave(PHOTOS_PATH + 'test.jpg', img_final)
-            command = 'povray -Ipovray_test_cob.pov.j2 Height=176 Width=240 Output_File_Name={}_cmd_{}'.format(
-                180 - int(cmd),
-                i)
-            subprocess.run(command, shell=True, cwd=PHOTOS_PATH)
-            i += 1
-            if i == configuration['images_curve']:
+            # # Mirroring the image
+            # img_complete = cv2.flip(img_complete, 1)
+            # img_final = 255 * np.ones((3 * img.shape[0], 4 * img.shape[1], 3), dtype='uint8')
+            # img_final[2 * img.shape[0]:, img.shape[1]:2 * img.shape[1], :] = img_complete[80:]
+            # file_name = uuid.uuid4().hex
+            # plt.imsave(PHOTOS_PATH + file_name + '.jpg', img_final)
+            # img = povraytize(file_name, i)[80:]
+            # plt.imsave(PHOTOS_PATH + '{}_cmd_{}'.format(180 - angle, i))
+            # i += 1
+            if i >= int(configuration['images_curve'] / 2):
                 break
 
 
-def a_little_right_direction(configuration):
-    i = 0
-    while True:
-        origin, end, radius = points_selection(configuration)
-        cmd = int(compute_command_arc(origin, end, radius))
+def povraytize(file_name, height=176, width=240):
+    templateLoader = jinja2.FileSystemLoader(searchpath=PHOTOS_PATH)
+    templateEnv = jinja2.Environment(loader=templateLoader)
+    TEMPLATE_FILE = "template.j2"
+    template = templateEnv.get_template(TEMPLATE_FILE)
+    outputText = template.render(image_name=file_name + '.jpg')
+    print(outputText)
+    with open(PHOTOS_PATH + file_name + '.pov.j2', "w") as out:
+        out.write(outputText)
 
-        if 36 < cmd and cmd >= 72:
-            img = grounds[np.random.choice(range(3))]
-            img_drawn = draw_central_dashed_arc_on_ground(img, origin, end, radius, (148, 252, 9))
-            img_complete = draw_lateral_complete_arcs_on_ground(img_drawn, origin, end, radius, (255, 255, 255))
-            img_final = 255 * np.ones((3 * img.shape[0], 4 * img.shape[1], 3), dtype='uint8')
-            img_final[2 * img.shape[0]:, img.shape[1]:2 * img.shape[1], :] = img_complete
-            plt.imsave(PHOTOS_PATH + 'test.jpg', img_final)
-            command = 'povray -Ipovray_test_cob.pov.j2 Height=176 Width=240 Output_File_Name={}_cmd_{}'.format(
-                int(cmd),
-                i)
-            subprocess.run(command, shell=True, cwd=PHOTOS_PATH)
+    command = ['povray', '-I' + file_name + '.pov.j2', 'Height=' + str(height), 'Width=' + str(width), 'Output_File_Type=P',
+               '-O-']
+    print(command)
 
-            # Mirroring the image
-            img_complete = cv2.flip(img_complete, 1)
-            img_final = 255 * np.ones((3 * img.shape[0], 4 * img.shape[1], 3), dtype='uint8')
-            img_final[2 * img.shape[0]:, img.shape[1]:2 * img.shape[1], :] = img_complete
-            plt.imsave('test.jpg', img_final)
-            plt.imsave(PHOTOS_PATH + 'test.jpg', img_final)
-            command = 'povray -Ipovray_test_cob.pov.j2 Height=176 Width=240 Output_File_Name={}_cmd_{}'.format(
-                180 - int(cmd),
-                i)
-            subprocess.run(command, shell=True, cwd=PHOTOS_PATH)
-            i += 1
-            if i == configuration['images_curve']:
-                break
+    process = subprocess.Popen(command, stderr=subprocess.PIPE,
+                               stdin=subprocess.PIPE,
+                               stdout=subprocess.PIPE, cwd=PHOTOS_PATH)
 
-def a_little_right_direction(configuration):
-    i = 0
-    while True:
-        origin, end, radius = points_selection(configuration)
-        cmd = int(compute_command_arc(origin, end, radius))
+    os.remove(PHOTOS_PATH+file_name + '.pov.j2')
+    os.remove(PHOTOS_PATH + file_name + '.jpg')
 
-        if 78 < cmd and cmd >= 108:
-            img = grounds[np.random.choice(range(3))]
-            img_drawn = draw_central_dashed_arc_on_ground(img, origin, end, radius, (148, 252, 9))
-            img_complete = draw_lateral_complete_arcs_on_ground(img_drawn, origin, end, radius, (255, 255, 255))
-            img_final = 255 * np.ones((3 * img.shape[0], 4 * img.shape[1], 3), dtype='uint8')
-            img_final[2 * img.shape[0]:, img.shape[1]:2 * img.shape[1], :] = img_complete
-            plt.imsave(PHOTOS_PATH + 'test.jpg', img_final)
-            command = 'povray -Ipovray_test_cob.pov.j2 Height=176 Width=240 Output_File_Name={}_cmd_{}'.format(
-                int(cmd),
-                i)
-            subprocess.run(command, shell=True, cwd=PHOTOS_PATH)
+    out, err = process.communicate()
+    print(out)
+    #image_to_return = ppm_to_numpy(buffer=out)
+    #return image_to_return
 
-            # Mirroring the image
-            img_complete = cv2.flip(img_complete, 1)
-            img_final = 255 * np.ones((3 * img.shape[0], 4 * img.shape[1], 3), dtype='uint8')
-            img_final[2 * img.shape[0]:, img.shape[1]:2 * img.shape[1], :] = img_complete
-            plt.imsave('test.jpg', img_final)
-            plt.imsave(PHOTOS_PATH + 'test.jpg', img_final)
-            command = 'povray -Ipovray_test_cob.pov.j2 Height=176 Width=240 Output_File_Name={}_cmd_{}'.format(
-                180 - int(cmd),
-                i)
-            subprocess.run(command, shell=True, cwd=PHOTOS_PATH)
-            i += 1
-            if i >= int(configuration['images_curve']/2):
-                break
+
+def ppm_to_numpy(filename=None, buffer=None, byteorder='>', numpy_found=True):
+    """Return image data from a raw PGM/PPM file as numpy array.
+    Format specification: http://netpbm.sourceforge.net/doc/pgm.html
+    """
+
+    if not numpy_found:
+        raise IOError("Function ppm_to_numpy requires numpy installed.")
+
+    if buffer is None:
+        with open(filename, 'rb') as f:
+            buffer = f.read()
+    try:
+        header, width, height, maxval = re.search(
+            b"(^P\d\s(?:\s*#.*[\r\n])*"
+            b"(\d+)\s(?:\s*#.*[\r\n])*"
+            b"(\d+)\s(?:\s*#.*[\r\n])*"
+            b"(\d+)\s(?:\s*#.*[\r\n]\s)*)", buffer).groups()
+    except AttributeError:
+        raise ValueError("Not a raw PPM/PGM file: '%s'" % filename)
+
+    cols_per_pixels = 1 if header.startswith(b"P5") else 3
+
+    dtype = 'uint8' if int(maxval) < 256 else byteorder + 'uint16'
+    arr = np.frombuffer(buffer, dtype=dtype,
+                        count=int(width) * int(height) * 3,
+                        offset=len(header))
+
+    return arr.reshape((int(height), int(width), 3))
