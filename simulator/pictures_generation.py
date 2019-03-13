@@ -59,7 +59,7 @@ def right_direction(configuration, execution_dir_path=PHOTOS_PATH, output_dir=PH
             img_complete = draw_lateral_complete_arcs_on_ground(img_drawn, origin, end, radius, (255, 255, 255))
             img_final = 255 * np.ones((3 * img.shape[0], 4 * img.shape[1], 3), dtype='uint8')
             img_final[2 * img.shape[0]:, img.shape[1]:2 * img.shape[1], :] = img_complete
-            plt.imsave(execution_dir_path + 'test.jpg', img_final)
+            plt.imsave(execution_dir_path + '/test.jpg', img_final)
             command = 'povray -I{} Height=176 Width=240 Output_File_Name={}/{}_cmd_{}'.format(
                     povray_file_path,
                     output_dir,
@@ -71,8 +71,7 @@ def right_direction(configuration, execution_dir_path=PHOTOS_PATH, output_dir=PH
             img_complete = cv2.flip(img_complete, 1)
             img_final = 255 * np.ones((3 * img.shape[0], 4 * img.shape[1], 3), dtype='uint8')
             img_final[2 * img.shape[0]:, img.shape[1]:2 * img.shape[1], :] = img_complete
-            plt.imsave('test.jpg', img_final)
-            plt.imsave(execution_dir_path + 'test.jpg', img_final)
+            plt.imsave(execution_dir_path + '/test.jpg', img_final)
             command = 'povray -I{} Height=176 Width=240 Output_File_Name={}/{}_cmd_{}'.format(
                     povray_file_path,
                     output_dir,
