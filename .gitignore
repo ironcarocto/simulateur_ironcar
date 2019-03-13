@@ -14,7 +14,8 @@ models/
 pyvenv.cfg
 simulator/__init__.pyc
 *.egg
-
+**.pyc
+/venv
 
 # exception to the rule
 !somefolder/.gitkeep

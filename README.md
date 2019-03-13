@@ -1,6 +1,21 @@
 1) Put images in folder ground
 
+# Contribuer au projet
 
-# TODO 
- * image in ground with size 600x600
- * 600 px -> 130 cm, so 1 px is 0.2cm in conf file
+1. créer un environnement virtuel
+
+```
+virtualenv venv -p python3
+```
+
+2. installer les dépendances de développement
+
+```bash
+. venv/bin/activate; pip install -e .[dev]
+```
+
+3. exécuter les tests
+
+```bash
+. venv/bin/activate; pytest
+```

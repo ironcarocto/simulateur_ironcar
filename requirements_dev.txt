@@ -1,6 +1,0 @@
-jupyter
-Pillow
-numpy
-matplotlib
-pytest
-opencv-python
