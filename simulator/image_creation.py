@@ -1,11 +1,10 @@
 import json
-
 import cv2
 import numpy as np
 
-from definitions import CONFIG_PATH
 from simulator.utils import angle_clockwise, Point
 
+from definitions import CONFIG_PATH
 configuration = json.load(open(CONFIG_PATH))
 
 
@@ -143,12 +142,12 @@ def compute_command_arc(start_point, end_point, radius):
     y, x = np.ogrid[0: configuration['image_width'], 0: configuration['image_height']]
     epsilon = 2
     mask = np.abs(np.sqrt((center.x - x) ** 2 + (center.y - y) ** 2) - radius) <= epsilon
-    y_arc, x_arc = np.where(mask)
+    y_arc, x_arc = np.where(mask == True)
 
     # computes the projection on line
     car_position_x, car_position_y = (int(configuration['image_width'] / 2), configuration['image_height'])
-    dists_from_line = list(((x_arc - car_position_x) ** 2 + (y_arc - car_position_y) ** 2))
-    index_projection = dists_from_line.index(min(dists_from_line))  # output the first index, enough
+    dists_from_ligne = list(((x_arc - car_position_x) ** 2 + (y_arc - car_position_y) ** 2))
+    index_projection = dists_from_ligne.index(min(dists_from_ligne))  # output the first index, enough
     projection_y = y_arc[index_projection]
     projection_x = x_arc[index_projection]
 
@@ -160,7 +159,8 @@ def compute_command_arc(start_point, end_point, radius):
     command_x = x_arc[min(points_to_consider)]
     command_y = y_arc[min(points_to_consider)]
 
-    destination = Point(command_x, command_y) - Point(x_arc[-1], y_arc[-1])
+    destination = Point(command_x, command_y) - \
+                  Point(x_arc[-1], y_arc[-1])
 
     vector_base = Point(1, 0)  # Computing the angle from the base
     angular_command = angle_clockwise(vector_base, destination)
@@ -168,22 +168,16 @@ def compute_command_arc(start_point, end_point, radius):
 
 
 def compute_command_line(start_point, end_point):
-    """
-    Computes the angular command associated with a straightline. Camera position is in bottom, right in the middle
-    :param start_point:
-    :param end_point:
-    :return: angular command in degrees (signed, clockwise)
-    """
     y, x = np.ogrid[0: configuration['image_width'], 0: configuration['image_height']]
     epsilon = 1000
     line_orientation = end_point - start_point
-    mask = np.abs((x - start_point.x) * line_orientation.y - (y - start_point.y) * line_orientation.x) <= epsilon
-    y_line, x_line = np.where(mask)
+    mask = np.abs((x - start_point.x) * (line_orientation.y) - (y - start_point.y) * (line_orientation.x)) <= epsilon
+    y_line, x_line = np.where(mask == True)
 
     # computes the projection on line
     car_position_x, car_position_y = (int(configuration['image_width'] / 2), configuration['image_height'])
-    dists_from_line = list(((x_line - car_position_x) ** 2 + (y_line - car_position_y) ** 2))
-    index_projection = dists_from_line.index(min(dists_from_line))  # output the first index, enough
+    dists_from_ligne = list(((x_line - car_position_x) ** 2 + (y_line - car_position_y) ** 2))
+    index_projection = dists_from_ligne.index(min(dists_from_ligne))  # output the first index, enough
     projection_y = y_line[index_projection]
     projection_x = x_line[index_projection]
 
