@@ -6,7 +6,7 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
-from definitions import CONFIG_PATH, GROUND_PATH, PHOTOS_PATH
+from definitions import CONFIG_PATH, GROUND_PATH, PHOTOS_PATH, ROOT_DIR
 from simulator.image_creation import compute_command_arc, \
     draw_central_dashed_arc_on_ground, draw_lateral_complete_arcs_on_ground
 from simulator.utils import Point
@@ -53,13 +53,15 @@ def right_direction(configuration, execution_dir_path=PHOTOS_PATH, output_dir=PH
         end = Point(end_pt[0], end_pt[1])
         cmd = int(compute_command_arc(origin, end, radius))
         if int(cmd) <= 36:
-            img = grounds[np.random.choice(range(3))]
+            povray_file_path = os.path.join(ROOT_DIR, 'simulator', 'povray_test_cob.pov')
+            img = grounds[np.random.choice(range(len(ground_images)))]
             img_drawn = draw_central_dashed_arc_on_ground(img, origin, end, radius, (148, 252, 9))
             img_complete = draw_lateral_complete_arcs_on_ground(img_drawn, origin, end, radius, (255, 255, 255))
             img_final = 255 * np.ones((3 * img.shape[0], 4 * img.shape[1], 3), dtype='uint8')
             img_final[2 * img.shape[0]:, img.shape[1]:2 * img.shape[1], :] = img_complete
             plt.imsave(execution_dir_path + 'test.jpg', img_final)
-            command = 'povray -Ipovray_test_cob.pov.j2 Height=176 Width=240 Output_File_Name={}/{}_cmd_{}'.format(
+            command = 'povray -I{} Height=176 Width=240 Output_File_Name={}/{}_cmd_{}'.format(
+                    povray_file_path,
                     output_dir,
                     int(cmd),
                     i)
@@ -71,7 +73,8 @@ def right_direction(configuration, execution_dir_path=PHOTOS_PATH, output_dir=PH
             img_final[2 * img.shape[0]:, img.shape[1]:2 * img.shape[1], :] = img_complete
             plt.imsave('test.jpg', img_final)
             plt.imsave(execution_dir_path + 'test.jpg', img_final)
-            command = 'povray -Ipovray_test_cob.pov.j2 Height=176 Width=240 Output_File_Name={}/{}_cmd_{}'.format(
+            command = 'povray -I{} Height=176 Width=240 Output_File_Name={}/{}_cmd_{}'.format(
+                    povray_file_path,
                     output_dir,
                     180 - int(cmd),
                     i)
