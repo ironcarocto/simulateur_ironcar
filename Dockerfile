@@ -1,3 +1,6 @@
+# ce dockerfile décrit l'environnement minimum
+# à installer sur une machine ubuntu pour
+# fonctionner le simulateur_ironcar
 FROM ubuntu:latest
 
 # tzdata ask region confirmation, use UTC
