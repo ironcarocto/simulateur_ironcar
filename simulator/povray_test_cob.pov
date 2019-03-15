@@ -1,4 +1,7 @@
+#version 3.7;
 #include "colors.inc"
+
+global_settings { assumed_gamma 1.0 }
 
 camera {
   ultra_wide_angle
