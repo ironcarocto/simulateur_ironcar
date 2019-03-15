@@ -3,20 +3,21 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='simulator',
-    version='1.0.0.dev0',
+    name='simulator_ironcar',
+    version='1.0.1',
     packages=find_packages(exclude=["*_tests"]),
     license='',
-    install_requires=[],
+    install_requires=[
+        'numpy',
+        'matplotlib',
+        'opencv-python',
+        'Pillow'
+    ],
     extras_require={
         'dev': [
             'pytest',
-            'jupyter',
-            'Pillow',
-            'numpy',
-            'matplotlib',
-            'pytest',
-            'opencv-python'
+            'pylint',
+            'jupyter'
         ]
     }
 )
