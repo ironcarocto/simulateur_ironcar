@@ -60,7 +60,7 @@ def right_direction(configuration, execution_dir_path=PHOTOS_PATH, output_dir=PH
             img_final = 255 * np.ones((3 * img.shape[0], 4 * img.shape[1], 3), dtype='uint8')
             img_final[2 * img.shape[0]:, img.shape[1]:2 * img.shape[1], :] = img_complete
             plt.imsave(execution_dir_path + '/test.jpg', img_final)
-            command = 'povray -I{} Height=176 Width=240 Output_File_Name={}/{}_cmd_{}'.format(
+            command = 'povray -D -I{} Height=176 Width=240 Output_File_Name={}/{}_cmd_{}'.format(
                     povray_file_path,
                     output_dir,
                     int(cmd),
@@ -72,7 +72,7 @@ def right_direction(configuration, execution_dir_path=PHOTOS_PATH, output_dir=PH
             img_final = 255 * np.ones((3 * img.shape[0], 4 * img.shape[1], 3), dtype='uint8')
             img_final[2 * img.shape[0]:, img.shape[1]:2 * img.shape[1], :] = img_complete
             plt.imsave(execution_dir_path + '/test.jpg', img_final)
-            command = 'povray -I{} Height=176 Width=240 Output_File_Name={}/{}_cmd_{}'.format(
+            command = 'povray -D -I{} Height=176 Width=240 Output_File_Name={}/{}_cmd_{}'.format(
                     povray_file_path,
                     output_dir,
                     180 - int(cmd),
