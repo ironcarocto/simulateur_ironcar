@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ironcarocto/simulateur_ironcar.svg?branch=master)](https://travis-ci.org/ironcarocto/simulateur_ironcar)
+
 Ce simulateur permet de générer un dataset préqualifié d'images de
 route tel que la verrait la caméra d'une **ironcar** associées à la commande de direction pour l'ironcar.
 
