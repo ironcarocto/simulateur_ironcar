@@ -13,7 +13,7 @@ dist:
 
 .PHONY: tests
 tests: ## run automatic tests
-	. venv/bin/activate; python -m pytest
+	. venv/bin/activate; python -m pytest tests/acceptances
 
 .PHONY: lint
 lint: ## run pylint
