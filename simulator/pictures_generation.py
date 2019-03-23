@@ -45,7 +45,7 @@ radius_pool = range(DEFAULT_CONFIGURATION['radius_pool_start'],
 
 
 def grounds(path=GROUND_PATH):
-    ground_images = [x for x in os.listdir(GROUND_PATH) if 'JPG' in x]
+    ground_images = [x for x in os.listdir(GROUND_PATH) if 'jpg' in x]
     ground_list = [cv2.imread(GROUND_PATH + '/' + img) for img in ground_images]
     ground_list = [cv2.resize(x, (DEFAULT_CONFIGURATION['image_width'],
                                   DEFAULT_CONFIGURATION['image_height'])) for x in ground_list]

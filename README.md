@@ -13,8 +13,42 @@ __2 exemples de sortie de simulateur_ironcar__
 ## Dernière version du code source de ce programme
 
 ```bash
-git clone https://github.com/Cnstant/simulateur_ironcar
+git clone https://github.com/ironcarocto/simulateur_ironcar.git
 ```
+
+## Utiliser le simulateur
+
+1. Installer le simulateur avec pip
+
+```bash
+pip install git+https://github.com/ironcarocto/simulateur_ironcar.git
+```
+
+2. Créer un dossier pour un profil de génération de route
+3. Initialiser un profile de génération de route
+
+
+```bash
+simulateur_ironcar init
+```
+
+Vous devez obtenir le dossier suivant
+
+```
+.
+├── configuration.json
+├── grounds
+│   ├── IMG_1417.JPG
+│   └── IMG_5993.JPG
+└── photos
+```
+
+* le dossier ``grounds`` contient les terrains sur lesquels vous voulez générer des routes
+
+4. Configurez votre profile de génération de route
+
+    1. placez de nouveaux grounds dans le dossier ``ground``
+    2. configurez les valeurs souhaités dans le fichier ``configuration.json``
 
 ## Contribuer au projet
 
