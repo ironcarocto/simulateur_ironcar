@@ -1,12 +1,17 @@
+import logging
+
 import cv2
 import numpy as np
 
+
 from simulator.utils import angle_clockwise, Point
+
 
 class ImageCreation:
 
     def __init__(self, configuration : dict):
         self.configuration = configuration
+        self.logger = logging.getLogger('simulateur_ironcar')
 
     def center_coordinates(self, start_point, end_point, radius):
         """
@@ -21,6 +26,7 @@ class ImageCreation:
         normal_unitary_vector = normal_vector / normal_vector.norm()
         middle = (start_point + end_point) / 2
         center = middle + normal_unitary_vector * (np.sqrt(radius ** 2 - (vector.norm() / 2) ** 2))
+
         center.x = int(round(center.x))
         center.y = int(round(center.y))
         return center
@@ -133,10 +139,10 @@ class ImageCreation:
 
         return img_drawn
 
-
     def compute_command_arc(self, start_point, end_point, radius):
         """
         Computes the angular command associated with an arc. Camera position is in bottom, right in the middle
+
         :param start_point: Point, starting point for the arc
         :param end_point: Point, end point for the arc
         :param radius: real positive value
@@ -144,6 +150,8 @@ class ImageCreation:
         """
         configuration = self.configuration
         center = self.center_coordinates(start_point, end_point, radius)
+        # self.logger.debug({'operation': 'compute_command_arc.center', 'x': center.x, 'y': center.y})
+
         y, x = np.ogrid[0: configuration['image_width'], 0: configuration['image_height']]
         epsilon = 2
         mask = np.abs(np.sqrt((center.x - x) ** 2 + (center.y - y) ** 2) - radius) <= epsilon
@@ -156,6 +164,8 @@ class ImageCreation:
         projection_y = y_arc[index_projection]
         projection_x = x_arc[index_projection]
 
+        # self.logger.debug({'operation': 'compute_command_arc.projection', 'x': projection_x, 'y': projection_y})
+
         # computes the destination point
         dists = np.sqrt((x_arc - projection_x) ** 2 + (y_arc - projection_y) ** 2)
         points_to_consider = \
@@ -166,6 +176,8 @@ class ImageCreation:
 
         destination = Point(command_x, command_y) - \
                       Point(x_arc[-1], y_arc[-1])
+
+        # self.logger.debug({'operation': 'compute_command_arc.commande', 'x': destination.x, 'y': destination.y})
 
         vector_base = Point(1, 0)  # Computing the angle from the base
         angular_command = angle_clockwise(vector_base, destination)
