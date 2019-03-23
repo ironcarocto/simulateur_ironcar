@@ -49,3 +49,11 @@ install_requirements: ## install pip requirements based on requirements.txt
 venv: ## build a virtual env for python 3 in ./venv
 	virtualenv venv -p python3
 	@echo "\"source venv/bin/activate\" to activate the virtual env"
+
+.PHONY: upload
+upload:
+	rm -rf *.egg-info
+	rm -rf build
+	rm -rf dist
+	. venv/bin/activate; python setup.py sdist bdist_wheel
+	. venv/bin/activate; twine upload dist/*

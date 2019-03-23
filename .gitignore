@@ -1,22 +1,14 @@
 .DS_Store
 .idea/
-env/
 __pycache__/
 .pytest_cache/
-exploration/
+/exploration
 .pycharmrc
 *.egg-info
-bin/
-lib/
-models/
 pyvenv.cfg
-simulator/__init__.pyc
 *.egg
 **.pyc
 /venv
-
-# exception to the rule
-!somefolder/.gitkeep
-
-/photos/*
-!/photos/.gitkeep
+/.tmp
+/build
+/dist

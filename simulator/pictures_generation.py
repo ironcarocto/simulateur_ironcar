@@ -111,7 +111,7 @@ def generate_profile_for_cadran(configuration,
                           'angle': angle,
                           'cadran_ok': cadran_start <= angle < cadran_end})
             if cadran_start <= angle < cadran_end:
-                povray_file_path = os.path.join(ROOT_DIR, 'povray_test_cob.pov')
+                povray_file_path = os.path.join(ROOT_DIR, 'povray.pov')
                 img = ground_list[np.random.choice(range(len(ground_list)))]
                 img_drawn = IMAGE_CREATION.draw_central_dashed_arc_on_ground(img, origin, end, radius, (148, 252, 9))
                 img_complete = IMAGE_CREATION.draw_lateral_complete_arcs_on_ground(img_drawn, origin, end, radius,
@@ -143,6 +143,7 @@ def generate_profile_for_cadran(configuration,
 def tmp_working_directory_directory():
     working_directory = tempfile.mkdtemp(prefix='simulateur_ironcar_')
     previous_wd = os.getcwd()
+
     os.chdir(working_directory)
     yield working_directory
     shutil.rmtree(working_directory)

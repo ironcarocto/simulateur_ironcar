@@ -10,6 +10,8 @@ from tests.acceptances.fixtures import clone_template
 def test_right_direction_should_save_twice_as_many_images_as_configuration():
     with clone_template(template_name='simple_profil_generation') as path:
         # Given
+        # initialise un dossier de travail - sinon le test declenche un FileNotFoundError sur getcwd
+        os.chdir(path)
         output_path = path + '/photos'
         ground_path = path + '/grounds'
         configuration = json.load(io.open(CONFIG_PATH))
