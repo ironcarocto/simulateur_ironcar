@@ -23,5 +23,5 @@
     "radius_pool_end":3000,
     "radius_pool_step":100,
 
-    "images_curve":1
+    "images_curve":2
 }

@@ -1,22 +1,20 @@
-import json
 import os
 
-import io
-from click.testing import CliRunner
-from simulator.cli import init
+from simulator import configuration
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROFIL_GENERATION_TEMPLATE_DIR = os.path.join(ROOT_DIR, '..', '..', 'simulator', 'profil_generation_template')
 
-def test_configuration_json_should_have_a_version_attribute():
+
+def test_configuration_json_is_valide():
     # Given
 
     # When
-    with io.open(os.path.join(PROFIL_GENERATION_TEMPLATE_DIR, 'configuration.json')) as fp:
-        configuration = json.load(fp)
+    conf = configuration.parse(os.path.join(PROFIL_GENERATION_TEMPLATE_DIR, 'configuration.json'))
 
     # Then
-    assert "version" in configuration
+    assert "version" in conf
+
 
 def test_grounds_directory_should_contain_at_least_one_ground():
     # Given
@@ -27,6 +25,7 @@ def test_grounds_directory_should_contain_at_least_one_ground():
 
     # Then
     assert len(ground_files) >= 1
+
 
 def test_photos_directory_should_be_empty():
     # Given

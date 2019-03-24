@@ -40,7 +40,9 @@ setup(
         ]
     },
     classifiers=[
+        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
         "License :: OSI Approved :: MIT License",
         "Environment :: Console"
     ]

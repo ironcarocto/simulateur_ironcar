@@ -10,6 +10,8 @@ import sys
 
 import io
 
+from simulator import configuration
+from simulator.configuration import ConfigurationError
 from simulator.pictures_generation import generate_profile_for_cadran
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -66,12 +68,15 @@ def generate():
         logger.error('a profile for road generation does not exists - start a profile with simulateur_ironcar init')
         sys.exit(1)
 
-    with io.open(os.path.join(profile_directory, 'configuration.json')) as configuration_fp:
-        configuration = json.load(configuration_fp)
+    try:
+        conf = configuration.parse(os.path.join(profile_directory, 'configuration.json'))
+    except ConfigurationError as exception:
+        logger.error('invalid configuration - {0}'.format(exception))
+        sys.exit(2)
 
     for i in range(0, 5):
         generate_profile_for_cadran(cadran_id=i,
-                                    configuration=configuration,
+                                    configuration=conf,
                                     ground_path=os.path.join(profile_directory, 'grounds'),
                                     photos_path= os.path.join(profile_directory, 'photos')
         )
