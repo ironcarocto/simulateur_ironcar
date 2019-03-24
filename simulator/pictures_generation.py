@@ -126,7 +126,8 @@ def generate_profile_for_cadran(configuration,
 
                 plt.imsave(tmp + '/test.jpg', img_final)
 
-                filename = 'cadran={}_angle={}_id={}'.format(cadran_id, angle, i)
+                dataset_id = configuration["dataset_id"]
+                filename = 'cadran={}_angle={}_id={}_did={}'.format(cadran_id, angle, i, dataset_id)
                 command = 'povray -D -I{} Height=176 Width=240 Output_File_Name={}/{}'.format(
                     povray_file_path,
                     photos_path,
