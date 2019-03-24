@@ -21,11 +21,17 @@ git clone https://github.com/ironcarocto/simulateur_ironcar.git
 1. Installer le simulateur avec pip
 
 ```bash
-pip install git+https://github.com/ironcarocto/simulateur_ironcar.git
+pip install simulateur_ironcar
 ```
 
 2. Créer un dossier pour un profil de génération de route
-3. Initialiser un profile de génération de route
+
+```bash
+mkdir mydirectory
+cd mydirectory
+```
+
+3. Initialiser un profile de génération de route depuis ce dossier
 
 
 ```bash

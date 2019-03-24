@@ -68,24 +68,33 @@ def generate():
         logger.error('a profile for road generation does not exists - start a profile with simulateur_ironcar init')
         sys.exit(1)
 
+    photo_path = os.path.join(profile_directory, 'photos')
+    if profil_generation_already_contains_results(photo_path):
+        logger.error('the profile has already been generated - empty the directory {}'.format(photo_path))
+        sys.exit(1)
+
     try:
         conf = configuration.parse(os.path.join(profile_directory, 'configuration.json'))
     except ConfigurationError as exception:
         logger.error('invalid configuration - {0}'.format(exception))
-        sys.exit(2)
+        sys.exit(1)
 
     for i in range(0, 5):
         generate_profile_for_cadran(cadran_id=i,
                                     configuration=conf,
                                     ground_path=os.path.join(profile_directory, 'grounds'),
-                                    photos_path= os.path.join(profile_directory, 'photos')
-        )
+                                    photos_path=photo_path)
 
 
 def configure_auto_logging(force_debug=False):
     debug = force_debug or os.getenv('APP_DEBUG') == '1'
     level_info = logging.DEBUG if debug else logging.INFO
     logging.basicConfig(format="%(asctime)s %(levelname)s - %(message)s [%(filename)s:%(lineno)s]", level=level_info)
+
+
+def profil_generation_already_contains_results(photos_path):
+    images_produced_by_povray = [x for x in os.listdir(photos_path) if x.endswith('.png')]
+    return len(images_produced_by_povray) != 0
 
 
 cli.add_command(init)

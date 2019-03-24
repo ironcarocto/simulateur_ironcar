@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='simulateur_ironcar',
-    version='1.0.5.post2',
+    version='1.0.6.post1',
     packages=find_packages(exclude=["test_*"]),
     license='MIT license',
     long_description=open('README.md').read(),
@@ -42,7 +42,6 @@ setup(
     classifiers=[
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
         "License :: OSI Approved :: MIT License",
         "Environment :: Console"
     ]
