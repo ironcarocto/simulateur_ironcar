@@ -12,4 +12,6 @@ RUN apt-get update &&\
     apt-get install -y python3-pip &&\
     pip3 install virtualenv
 
-RUN ln -s /etc/povray/ /root/.povray
+RUN pip3 install simulateur-ironcar
+
+ENTRYPOINT ['simulateur_ironcar']

@@ -15,6 +15,10 @@ dist:
 tests: ## run automatic tests
 	. venv/bin/activate; python -m pytest tests/acceptances
 
+.PHONY: tox
+tox: ## run tests described in tox.ini for multi-python environments
+	tox
+
 .PHONY: lint
 lint: ## run pylint
 	. venv/bin/activate; pylint --rcfile=.rcfile $(APPLICATION_MODULE)

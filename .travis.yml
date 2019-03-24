@@ -1,17 +1,15 @@
 language: python
-
 python:
+  - "3.5"
   - "3.6"
 
 before_install:
   - DEBIAN_FRONTEND=noninteractive sudo apt-get install -y tzdata
   - sudo apt-get install -y libopencv-dev
   - sudo apt-get install -y povray
-  - pip3 install virtualenv
 
 install:
-  - make venv
-  - make install_requirements_dev
+  - pip3 install tox-travis
 
 script:
-  - make tests
+  - tox

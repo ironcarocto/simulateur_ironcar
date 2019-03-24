@@ -12,3 +12,4 @@ pyvenv.cfg
 /.tmp
 /build
 /dist
+/.tox
