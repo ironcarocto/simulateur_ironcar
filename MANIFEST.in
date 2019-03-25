@@ -1,0 +1,5 @@
+include simulator/profil_generation_template/*
+include simulator/profil_generation_template/grounds/*
+include simulator/profil_generation_template/photos/*
+include requirements.txt
+include simulator/povray.pov

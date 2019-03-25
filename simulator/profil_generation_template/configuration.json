@@ -1,0 +1,28 @@
+{
+    "version": "2019/02/23",
+    "dataset_id": "dataset",
+    "line_width_cm": 6,
+    "line_spread_cm" : 40,
+    "dash_length_cm" : 40,
+    "conversion_pixel_to_cm" : 0.3,
+    "image_width" : 1000,
+    "image_height": 1000,
+    "command_distance_cm" : 20,
+    "origin_pool_start":100,
+    "origin_pool_end":500,
+    "origin_pool_step":5,
+
+    "end_pool_top_start":600,
+    "end_pool_top_end":1000,
+    "end_pool_top_step":5,
+
+    "end_pool_right_start":10,
+    "end_pool_right_end":900,
+    "end_pool_right_step":5,
+
+    "radius_pool_start":600,
+    "radius_pool_end":3000,
+    "radius_pool_step":100,
+
+    "images_curve":2
+}
