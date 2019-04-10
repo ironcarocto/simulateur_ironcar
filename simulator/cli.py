@@ -1,14 +1,11 @@
 #!/usr/bin/python
 # coding=utf-8
-import json
 import logging
 import os
 import shutil
-
-import click
 import sys
 
-import io
+import click
 
 from simulator import configuration
 from simulator.configuration import ConfigurationError
@@ -21,7 +18,6 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 @click.option('--verbose', '-v', is_flag=True)
 def cli(verbose):
     configure_auto_logging(verbose)
-    pass
 
 
 @click.command('init', help="initialiser un profile de génération de route")
@@ -70,13 +66,13 @@ def generate():
 
     photo_path = os.path.join(profile_directory, 'photos')
     if profil_generation_already_contains_results(photo_path):
-        logger.error('the profile has already been generated - empty the directory {}'.format(photo_path))
+        logger.error('the profile has already been generated - empty the directory %s', photo_path)
         sys.exit(1)
 
     try:
         conf = configuration.parse(os.path.join(profile_directory, 'configuration.json'))
     except ConfigurationError as exception:
-        logger.error('invalid configuration - {0}'.format(exception))
+        logger.error('invalid configuration - %s', exception)
         sys.exit(1)
 
     for i in range(0, 5):
@@ -101,4 +97,4 @@ cli.add_command(init)
 cli.add_command(generate)
 
 if __name__ == '__main__':
-    cli()
+    cli(True)
