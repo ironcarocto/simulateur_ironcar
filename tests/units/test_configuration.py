@@ -25,7 +25,7 @@ def test_initialize_should_show_a_warning_with_default_value_when_road_median_li
     assert 'road_median_line_color is missing from configuration.json. default value : #66ec04' in caplog.messages
 
 
-def test_initialize_raises_a_value_error_when_road_median_line_color_value_is_not_hexadecimal():
+def test_initialize_raises_an_error_when_road_median_line_color_value_is_not_hexadecimal():
     wrong_color_value = 'red'
     mock_configuration = {
         'version' : '2019/02/23',
@@ -36,7 +36,7 @@ def test_initialize_raises_a_value_error_when_road_median_line_color_value_is_no
         configuration._initialize(mock_configuration, configuration_path = 'configuration.json')
 
 
-def test_initialize_convert_road_median_line_color_from_hexadecimal_to_rgb_tuple():
+def test_initialize_convert_road_median_line_color_from_hexadecimal_to_rgb_tuple_supported_by_cv2():
     road_median_line_color = '#ffffff'
     mock_configuration = {
         'version' : '2019/02/23',

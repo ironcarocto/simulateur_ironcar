@@ -7,7 +7,7 @@ from simulator.cli import init, generate
 from tests.acceptances.fixtures import clone_template
 
 
-def test_cli_init_should_generate_profile_in_working_directory():
+def test_cli_init_should_generate_a_profile_in_working_directory():
     with clone_template(template_name='empty_working_directory') as cwd:
         # Given
         os.chdir(cwd)
@@ -20,7 +20,7 @@ def test_cli_init_should_generate_profile_in_working_directory():
         assert result.exit_code == 0
         assert os.path.isfile(os.path.join(cwd, 'configuration.json'))
 
-def test_cli_init_should_not_erase_existing_configuration():
+def test_cli_init_should_not_erase_existing_configuration_file():
     with clone_template(template_name='simple_profil_generation') as cwd:
         # Given
         os.chdir(cwd)

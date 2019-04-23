@@ -35,6 +35,7 @@ setup(
         'dev': [
             'jupyter',
             'pytest',
+            'pytest-testdox',
             'pylint',
             'twine'
         ]
