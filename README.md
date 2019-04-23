@@ -56,6 +56,27 @@ Vous devez obtenir le dossier suivant
     1. placez de nouveaux grounds dans le dossier ``ground``
     2. configurez les valeurs souhaités dans le fichier ``configuration.json``
 
+5. Générez les routes
+
+```
+simulateur_ironcar generate
+```
+
+les routes sont dans le dossier photos avec le format suivant :
+
+```
+photos/cadran=0_angle=14_id=0_did=dataset.png
+...
+```
+
+les roues droites au sens trigo sont à 90°.
+
+* cadran 0 : roue de 0 à 35° (sens trigo)
+* cadran 1 : roue de 35 à 70° (sens trigo)
+* cadran 2 : roue de 70° à 110° (sens trigo)
+* cadran 3 : roue de 110° à 145° (sens trigo)
+* cadran 4 : roue de 145° à 190° (sens trigo)
+
 ## Contribuer au projet
 
 1. créer un environnement virtuel

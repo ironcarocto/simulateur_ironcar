@@ -25,8 +25,10 @@ lint: ## run pylint
 
 .PHONY: clean
 clean :
+	rm -rf build
 	rm -rf dist
 	rm -rf venv
+	rm -rf .tox
 	rm -f .coverage
 	rm -rf *.egg-info
 	rm -f MANIFEST

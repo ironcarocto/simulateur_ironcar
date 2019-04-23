@@ -1,29 +1,32 @@
+# pylint: disable=not-context-manager,too-many-locals,invalid-name
+
 import json
 import logging
+import os
 import shutil
 import subprocess
 import tempfile
+from decorator import contextmanager
+
 
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
-from decorator import contextmanager
 
 from simulator.image_creation import ImageCreation
 from simulator.utils import Point
-import os
 
 cwd = os.getcwd()
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_PATH = os.path.join(cwd, 'configuration.json')
-if not os.path.isfile(CONFIG_PATH): # pour garder la compatibilité avec les notebooks
+if not os.path.isfile(CONFIG_PATH):  # pour garder la compatibilité avec les notebooks
     CONFIG_PATH = os.path.join(ROOT_DIR, 'profil_generation_template', 'configuration.json')
 
 GROUND_PATH = os.path.join(cwd, 'grounds')
 PHOTOS_PATH = os.path.join(cwd, 'photos')
 
 DEFAULT_CONFIGURATION = json.load(open(CONFIG_PATH))
-IMAGE_CREATION = ImageCreation(configuration = DEFAULT_CONFIGURATION)
+IMAGE_CREATION = ImageCreation(configuration=DEFAULT_CONFIGURATION)
 
 # Configuration
 origin_pool = np.arange(DEFAULT_CONFIGURATION['origin_pool_start'],
@@ -47,16 +50,16 @@ radius_pool = range(DEFAULT_CONFIGURATION['radius_pool_start'],
                     DEFAULT_CONFIGURATION['radius_pool_end'],
                     DEFAULT_CONFIGURATION['radius_pool_step'])
 
-
 mirror_pool = [False, True]
 
 CADRAN = {
     0: [0, 36],
-    1: [36,72],
+    1: [36, 72],
     2: [72, 108],
     3: [108, 144],
     4: [144, 180]
 }
+
 
 # Handling ground images
 
@@ -67,6 +70,7 @@ def grounds(path):
     ground_list = [cv2.resize(x, (DEFAULT_CONFIGURATION['image_width'],
                                   DEFAULT_CONFIGURATION['image_height'])) for x in ground_list]
     return ground_list
+
 
 def generate_profile_for_cadran(configuration,
                                 ground_path=GROUND_PATH,
@@ -139,6 +143,7 @@ def generate_profile_for_cadran(configuration,
                 i += 1
                 if i == configuration['images_curve']:
                     break
+
 
 @contextmanager
 def tmp_working_directory_directory():

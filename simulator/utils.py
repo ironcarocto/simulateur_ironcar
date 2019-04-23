@@ -4,60 +4,63 @@ from math import sqrt
 import numpy as np
 
 
-def length(v):
+def length(vec):
     """
     Computes the norm of a 2 coordinates vector v
-    :param v: Point
+    :param vec: Point
     :return: norm
     """
-    return sqrt(v.x ** 2 + v.y ** 2)
+    return sqrt(vec.x ** 2 + vec.y ** 2)
 
 
-def dot_product(v, w):
+def dot_product(vec1, vec2):
     """
     Computes the dot scalar product of 2  2D vectors v and w
-    :param v: Point
-    :param w: Point
+    :param vec1: Point
+    :param vec2: Point
     :return: scalar product
     """
-    return v.x * w.x + v.y * w.y
+    return vec1.x * vec2.x + vec1.y * vec2.y
 
 
-def determinant(v, w):
+def determinant(vec1, vec2):
     """
     Computes the determinant product of 2 2D vectors v and w
-    :param v: Point
-    :param w: Point
+    :param vec1: Point
+    :param vec2: Point
     :return: determinant
     """
-    return v.x * w.y - v.y * w.x
+    return vec1.x * vec2.y - vec1.y * vec2.x
 
 
-def inner_angle(v, w):
+def inner_angle(vec1, vec2):
     """
     Computes the inner angle between 2 2D vectors v and w
-    :param v: Point
-    :param w: Point
+    :param vec1: Point
+    :param vec2: Point
     :return: inner angle (in degrees)
     """
-    cosx = dot_product(v, w) / (length(v) * length(w))
+    cosx = dot_product(vec1, vec2) / (length(vec1) * length(vec2))
     rad = acos(cosx)  # in radians
     return rad * 180 / pi  # returns degrees
 
 
-def angle_clockwise(v, w):
+def angle_clockwise(vec1, vec2):
     """
     Computes the oriented angle between 2 2D vectors v and w
-    :param v: Point
-    :param w: Point
+    :param vec1: Point
+    :param vec2: Point
     :return: oriented angle (in degrees)
     """
-    inner = inner_angle(v, w)
-    det = determinant(v, w)
+    res = None
+    inner = inner_angle(vec1, vec2)
+    det = determinant(vec1, vec2)
     if det < 0:  # this is a property of the det. If the det < 0 then B is clockwise of A
-        return inner
+        res = inner
     else:  # if the det > 0 then A is immediately clockwise of B
-        return -inner
+        res = -inner
+
+    return res
 
 
 class Point:

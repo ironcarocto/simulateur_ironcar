@@ -15,10 +15,8 @@ def parse(configuration_path):
         raise ConfigurationError('version attribute is required in {}'.format(configuration_path))
 
     if conf["version"] not in SUPPORTED_VERSIONS:
-        raise ConfigurationError(
-            'version of configuration is not supported by this program {} - supported versions of configuration : {}'.format(
-                conf["version"],
-                SUPPORTED_VERSIONS))
+        msg = 'version of configuration is not supported by this program {} - supported versions of configuration : {}'
+        raise ConfigurationError(msg.format(conf["version"], SUPPORTED_VERSIONS))
 
     dataset_pattern = re.compile(r'(?:^[^_=]*$)')
     if "dataset_id" in conf:
@@ -31,6 +29,4 @@ def parse(configuration_path):
 
 
 class ConfigurationError(Exception):
-
-    def __init__(self, message):
-        super().__init__(message)
+    pass

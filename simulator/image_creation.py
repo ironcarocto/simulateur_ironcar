@@ -1,15 +1,16 @@
+# pylint: disable=too-many-locals,too-many-arguments
+
 import logging
 
 import cv2
 import numpy as np
-
 
 from simulator.utils import angle_clockwise, Point
 
 
 class ImageCreation:
 
-    def __init__(self, configuration : dict):
+    def __init__(self, configuration: dict):
         self.configuration = configuration
         self.logger = logging.getLogger('simulateur_ironcar')
 
@@ -31,7 +32,6 @@ class ImageCreation:
         center.y = int(round(center.y))
         return center
 
-
     def draw_central_dashed_arc_on_ground(self, img, start_point, end_point, radius, color):
         """
         Plot central dashed arc (curved line). See configuration file for line specifications
@@ -46,7 +46,8 @@ class ImageCreation:
         img_drawn = img.copy()
         center = self.center_coordinates(start_point, end_point, radius)
 
-        alpha = round(180 * (configuration['dash_length_cm'] / configuration['conversion_pixel_to_cm']) / (np.pi * radius))
+        alpha = round(
+            180 * (configuration['dash_length_cm'] / configuration['conversion_pixel_to_cm']) / (np.pi * radius))
         start_angles = np.arange(0, 360, alpha)
         end_angles = np.arange(alpha, 361, alpha)
 
@@ -55,7 +56,6 @@ class ImageCreation:
                 cv2.ellipse(img_drawn, (center.x, center.y), (radius, radius), 0, couple[0], couple[1], color,
                             thickness=int(configuration['line_width_cm'] / configuration['conversion_pixel_to_cm']))
         return img_drawn
-
 
     def draw_lateral_complete_arcs_on_ground(self, img, start_point, end_point, radius, color):
         """
@@ -80,7 +80,6 @@ class ImageCreation:
                     thickness=int(configuration['line_width_cm'] / configuration['conversion_pixel_to_cm']))
         return img_drawn
 
-
     def draw_central_dashed_line_on_ground(self, img, start_point, end_point, color):
         """
         Plot central dashed line. See configuration file for line specifications
@@ -94,7 +93,8 @@ class ImageCreation:
         img_drawn = img.copy()
         vector = end_point - start_point
         vector_normalized = vector / vector.norm()
-        segment_number = int(vector.norm() // (configuration['dash_length_cm'] / configuration['conversion_pixel_to_cm']))
+        segment_number = int(
+            vector.norm() // (configuration['dash_length_cm'] / configuration['conversion_pixel_to_cm']))
         segments_points = [start_point + i * (configuration['dash_length_cm'] / configuration['conversion_pixel_to_cm'])
                            * vector_normalized for i in range(segment_number + 1)]
         for i, couple in enumerate(zip(segments_points[:-1], segments_points[1:])):
@@ -103,7 +103,6 @@ class ImageCreation:
                          (int(round(couple[1].x)), int(round(couple[1].y))),
                          color, thickness=int(configuration['line_width_cm'] / configuration['conversion_pixel_to_cm']))
         return img_drawn
-
 
     def draw_lateral_complete_lines_on_ground(self, img, start_point, end_point, color):
         """
@@ -114,12 +113,11 @@ class ImageCreation:
         :param color: RGB numpy.array (3 colors between 0 & 255)
         :return: numpy.ndarray drawn image
         """
-        configuration = self.configuration
         img_drawn = img.copy()
         vector = end_point - start_point
         vector_normalized = vector / vector.norm()
         vector_normalized_othogonal = Point(-vector_normalized.y, vector_normalized.x)
-        width = int(configuration['line_spread_cm'] / configuration['conversion_pixel_to_cm'])
+        width = int(self.configuration['line_spread_cm'] / self.configuration['conversion_pixel_to_cm'])
         left_point = start_point + width * vector_normalized_othogonal
         left_constant = left_point.y - left_point.x * vector.y / vector.x
 
@@ -131,11 +129,13 @@ class ImageCreation:
 
         cv2.line(img_drawn, (int((img_height - right_constant) * vector.x / vector.y), img_height),
                  (img_width, int(img_width * vector.y / vector.x + right_constant)),
-                 color, thickness=int(configuration['line_width_cm'] / configuration['conversion_pixel_to_cm']))
+                 color,
+                 thickness=int(self.configuration['line_width_cm'] / self.configuration['conversion_pixel_to_cm']))
 
         cv2.line(img_drawn, (int((img_height - left_constant) * vector.x / vector.y), img_height),
                  (img_width, int(img_width * vector.y / vector.x + left_constant)),
-                 color, thickness=int(configuration['line_width_cm'] / configuration['conversion_pixel_to_cm']))
+                 color,
+                 thickness=int(self.configuration['line_width_cm'] / self.configuration['conversion_pixel_to_cm']))
 
         return img_drawn
 
@@ -183,13 +183,13 @@ class ImageCreation:
         angular_command = angle_clockwise(vector_base, destination)
         return angular_command
 
-
     def compute_command_line(self, start_point, end_point):
         configuration = self.configuration
         y, x = np.ogrid[0: configuration['image_width'], 0: configuration['image_height']]
         epsilon = 1000
         line_orientation = end_point - start_point
-        mask = np.abs((x - start_point.x) * (line_orientation.y) - (y - start_point.y) * (line_orientation.x)) <= epsilon
+        mask = np.abs(
+            (x - start_point.x) * (line_orientation.y) - (y - start_point.y) * (line_orientation.x)) <= epsilon
         y_line, x_line = np.where(mask == True)
 
         # computes the projection on line

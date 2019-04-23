@@ -7,7 +7,7 @@ from simulator.pictures_generation import CONFIG_PATH, generate_profile_for_cadr
 from tests.acceptances.fixtures import clone_template
 
 
-def test_right_direction_should_save_twice_as_many_images_as_configuration():
+def test_generate_profile_for_cadran_should_save_twice_as_many_images_as_configuration():
     with clone_template(template_name='simple_profil_generation') as path:
         # Given
         # initialise un dossier de travail - sinon le test declenche un FileNotFoundError sur getcwd
