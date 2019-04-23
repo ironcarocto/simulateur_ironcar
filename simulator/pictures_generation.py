@@ -119,7 +119,8 @@ def generate_profile_for_cadran(configuration,
                 img_drawn = IMAGE_CREATION.draw_central_dashed_arc_on_ground(img, origin, end, radius,
                                                                              configuration['road_median_line_color'])
                 img_complete = IMAGE_CREATION.draw_lateral_complete_arcs_on_ground(img_drawn, origin, end, radius,
-                                                                                   (255, 255, 255))
+                                                                                   configuration[
+                                                                                       'road_outer_line_color'])
                 img_final = 255 * np.ones((3 * img.shape[0], 4 * img.shape[1], 3), dtype='uint8')
                 img_final[2 * img.shape[0]:, img.shape[1]:2 * img.shape[1], :] = img_complete
 

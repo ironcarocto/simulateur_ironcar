@@ -38,12 +38,12 @@ def parse(configuration_path: str) -> dict:
         conf = json.load(configuration_fp)
 
     check_integrity(conf, configuration_path)
-    return _initialize(conf)
+    return _initialize(conf, configuration_path)
 
 
 def check_integrity(configuration: dict, configuration_path: str = None):
     integrity = True
-    message = 'missing mandatory options in {}'.format(configuration_path)
+    message = 'mandatory options are missing in {}'.format(configuration_path)
     for attribute in MANDATORY_OPTIONS:
         if attribute not in configuration:
             message += '\n  - {}'.format(attribute)
@@ -52,11 +52,8 @@ def check_integrity(configuration: dict, configuration_path: str = None):
     if not integrity:
         raise ConfigurationError(message)
 
-def _initialize(configuration: dict, configuration_path: str = None) -> dict:
-    logger = logging.getLogger('simulateur_ironcar')
-    if "version" not in configuration:
-        raise ConfigurationError('version attribute is required in {}'.format(configuration_path))
 
+def _initialize(configuration: dict, configuration_path: str = None) -> dict:
     if configuration["version"] not in SUPPORTED_VERSIONS:
         msg = 'version of configuration is not supported by this program {} - supported versions of configuration : {}'
         raise ConfigurationError(msg.format(configuration["version"], SUPPORTED_VERSIONS))
@@ -69,19 +66,27 @@ def _initialize(configuration: dict, configuration_path: str = None) -> dict:
     else:
         configuration['dataset_id'] = "dataset"
 
-    if 'road_median_line_color' not in configuration:
-        default_road_median_line_color = '#66ec04'
-        configuration['road_median_line_color'] = hex2rgb255(default_road_median_line_color)
-        logger.warning('road_median_line_color is missing from %s. default value : %s',
-                       configuration_path, default_road_median_line_color)
+    configuration = parse_color_option_for_cv2(configuration, 'road_median_line_color', '#66ec04', configuration_path)
+    configuration = parse_color_option_for_cv2(configuration, 'road_outer_line_color', '#ffffff', configuration_path)
+
+    return configuration
+
+
+def parse_color_option_for_cv2(configuration: dict, option: str, default_value: str, configuration_path: str):
+    logger = logging.getLogger('simulateur_ironcar')
+    if option not in configuration:
+        default_road_median_line_color = default_value
+        configuration[option] = hex2rgb255(default_road_median_line_color)
+        logger.info('%s is missing from %s. default value : %s', option,
+                    configuration_path, default_road_median_line_color)
     else:
-        road_median_line_color = configuration['road_median_line_color']
+        color = configuration[option]
         try:
-            configuration['road_median_line_color'] = hex2rgb255(road_median_line_color)
+            configuration[option] = hex2rgb255(color)
         except ValueError:
             raise ConfigurationError(
-                'road_median_line_color should be an hexadecimal web value as #ffffff, instead : {}'.format(
-                    road_median_line_color))
+                '{} should be an hexadecimal web value as #ffffff, instead : {}'.format(
+                    option, color))
 
     return configuration
 
