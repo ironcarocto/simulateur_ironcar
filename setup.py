@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 setup(
     name='simulateur_ironcar',
-    version='1.0.6.post1',
+    version='1.0.7',
     packages=find_packages(exclude=["test_*"]),
     license='MIT license',
     long_description=open('README.md').read(),
