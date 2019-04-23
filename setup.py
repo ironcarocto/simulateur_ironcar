@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from setuptools import setup, find_packages
-
 setup(
     name='simulateur_ironcar',
     version='1.0.6.post1',
@@ -24,18 +23,19 @@ setup(
         ],
     },
     install_requires=[
-        'numpy',
+        'click',
+        'colour',
+        'decorator',
         'matplotlib',
+        'numpy',
         'opencv-python',
         'Pillow',
-        'click',
-        'decorator'
     ],
     extras_require={
         'dev': [
+            'jupyter',
             'pytest',
             'pylint',
-            'jupyter',
             'twine'
         ]
     },
@@ -46,3 +46,4 @@ setup(
         "Environment :: Console"
     ]
 )
+
