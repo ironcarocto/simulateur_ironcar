@@ -77,6 +77,10 @@ les roues droites au sens trigo sont à 90°.
 * cadran 3 : roue de 110° à 145° (sens trigo)
 * cadran 4 : roue de 145° à 190° (sens trigo)
 
+### contenu du fichier configuration.json
+
+[en savoir plus](docs/configuration_json.md)
+
 ## Contribuer au projet
 
 1. créer un environnement virtuel
