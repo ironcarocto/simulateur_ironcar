@@ -8,7 +8,6 @@ import subprocess
 import tempfile
 from decorator import contextmanager
 
-
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
@@ -117,7 +116,8 @@ def generate_profile_for_cadran(configuration,
             if cadran_start <= angle < cadran_end:
                 povray_file_path = os.path.join(ROOT_DIR, 'povray.pov')
                 img = ground_list[np.random.choice(range(len(ground_list)))]
-                img_drawn = IMAGE_CREATION.draw_central_dashed_arc_on_ground(img, origin, end, radius, (148, 252, 9))
+                img_drawn = IMAGE_CREATION.draw_central_dashed_arc_on_ground(img, origin, end, radius,
+                                                                             configuration['road_median_line_color'])
                 img_complete = IMAGE_CREATION.draw_lateral_complete_arcs_on_ground(img_drawn, origin, end, radius,
                                                                                    (255, 255, 255))
                 img_final = 255 * np.ones((3 * img.shape[0], 4 * img.shape[1], 3), dtype='uint8')

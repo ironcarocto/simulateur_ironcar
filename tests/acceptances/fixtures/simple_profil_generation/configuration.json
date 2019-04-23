@@ -23,5 +23,7 @@
     "radius_pool_end":3000,
     "radius_pool_step":100,
 
+    "road_median_line_color":"#66ec04",
+
     "images_curve":1
 }
