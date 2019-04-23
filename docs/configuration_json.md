@@ -38,7 +38,9 @@ le fichier de configuration par défaut est dans [simulator/profil_generation_te
 
 ### road_median_line_color
 
-Couleur de la ligne centrale. Ici ``#66ec04``.
+Couleur de la ligne centrale.
+
+* valeur par défaut : ``#66ec04``.
 
 ![Banner](docs/images/21_cmd_0.png)
 
@@ -46,7 +48,9 @@ Seule [les couleurs web sous forme de code hexadécimale](https://www.w3.org/TR/
 
 ### road_outer_line_color
 
-Couleur du marquage extérieure. Ici ``#ffffff``
+Couleur du marquage extérieure.
+
+* valeur par défaut : ``#ffffff``.
 
 ![Banner](docs/images/21_cmd_0.png)
 
@@ -55,3 +59,6 @@ Seule [les couleurs web sous forme de code hexadécimale](https://www.w3.org/TR/
 ### images_curve
 
 Nombre d'images générées par terrains (grounds)
+
+* option obligatoire
+* valeur par défaut : 2

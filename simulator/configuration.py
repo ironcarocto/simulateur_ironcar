@@ -8,14 +8,49 @@ import re
 from colour import hex2rgb
 
 SUPPORTED_VERSIONS = ["2019/02/23"]
+MANDATORY_OPTIONS = [
+    'version',
+    'line_width_cm',
+    'line_spread_cm',
+    'dash_length_cm',
+    'conversion_pixel_to_cm',
+    'image_width',
+    'image_height',
+    'command_distance_cm',
+    'origin_pool_start',
+    'origin_pool_end',
+    'origin_pool_step',
+    'end_pool_top_start',
+    'end_pool_top_end',
+    'end_pool_top_step',
+    'end_pool_right_start',
+    'end_pool_right_end',
+    'end_pool_right_step',
+    'radius_pool_start',
+    'radius_pool_end',
+    'radius_pool_step',
+    'images_curve'
+]
 
 
 def parse(configuration_path: str) -> dict:
     with io.open(configuration_path) as configuration_fp:
         conf = json.load(configuration_fp)
 
+    check_integrity(conf, configuration_path)
     return _initialize(conf)
 
+
+def check_integrity(configuration: dict, configuration_path: str = None):
+    integrity = True
+    message = 'missing mandatory options in {}'.format(configuration_path)
+    for attribute in MANDATORY_OPTIONS:
+        if attribute not in configuration:
+            message += '\n  - {}'.format(attribute)
+            integrity = False
+
+    if not integrity:
+        raise ConfigurationError(message)
 
 def _initialize(configuration: dict, configuration_path: str = None) -> dict:
     logger = logging.getLogger('simulateur_ironcar')
