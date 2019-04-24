@@ -8,15 +8,17 @@ help: ## provides cli help for this makefile (default)
 	@grep -E '^[a-zA-Z_0-9-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 .PHONY: dist
-dist:
-	. venv/bin/activate; python setup.py sdist
+dist: ## package simulateur_ironcar as a wheel and a source distribution
+	rm -rf *.egg-info
+	rm -rf build
+	rm -rf dist
+	. venv/bin/activate; python setup.py sdist bdist_wheel
 
 .PHONY: tests
 tests: ## run automatic tests
 	. venv/bin/activate; python -m pytest tests/units
 	. venv/bin/activate; python -m pytest tests/integrations
 	. venv/bin/activate; python -m pytest tests/acceptances
-
 
 .PHONY: tox
 tox: ## run tests described in tox.ini for multi-python environments
@@ -50,7 +52,7 @@ install_requirements_dev: venv ## install pip requirements for development
 	. venv/bin/activate; pip install -e .[dev]
 
 .PHONY: install_requirements
-install_requirements: ## install pip requirements based on requirements.txt
+install_requirements: venv ## install pip requirements based on requirements.txt
 	. venv/bin/activate; pip install -r requirements.txt
 	. venv/bin/activate; pip install -e .
 
@@ -60,9 +62,5 @@ venv: ## build a virtual env for python 3 in ./venv
 	@echo "\"source venv/bin/activate\" to activate the virtual env"
 
 .PHONY: upload
-upload:
-	rm -rf *.egg-info
-	rm -rf build
-	rm -rf dist
-	. venv/bin/activate; python setup.py sdist bdist_wheel
+upload: dist ## package and upload simulateur_ironcar on python package index
 	. venv/bin/activate; twine upload dist/*
