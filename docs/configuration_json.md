@@ -40,9 +40,9 @@ le fichier de configuration par défaut est dans [simulator/profil_generation_te
 
 Couleur de la ligne centrale.
 
-* valeur par défaut : ``#66ec04``.
+* valeur par défaut : ``#66ec04``. La ligne verte visible ci-dessous.
 
-![Banner](docs/images/21_cmd_0.png)
+![Banner](images/21_cmd_0.png)
 
 Seule [les couleurs web sous forme de code hexadécimale](https://www.w3.org/TR/REC-html40/types.html#h-6.5) sont supportées.
 
@@ -50,9 +50,9 @@ Seule [les couleurs web sous forme de code hexadécimale](https://www.w3.org/TR/
 
 Couleur du marquage extérieure.
 
-* valeur par défaut : ``#ffffff``.
+* valeur par défaut : ``#ffffff``. La ligne blanche visible ci-dessous
 
-![Banner](docs/images/21_cmd_0.png)
+![Banner](images/21_cmd_0.png)
 
 Seule [les couleurs web sous forme de code hexadécimale](https://www.w3.org/TR/REC-html40/types.html#h-6.5) sont supportées.
 
