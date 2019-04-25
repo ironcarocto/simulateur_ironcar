@@ -77,6 +77,10 @@ les roues droites au sens trigo sont à 90°.
 * cadran 3 : roue de 110° à 145° (sens trigo)
 * cadran 4 : roue de 145° à 190° (sens trigo)
 
+### contenu du fichier configuration.json
+
+[en savoir plus](docs/configuration_json.md)
+
 ## Contribuer au projet
 
 1. créer un environnement virtuel
@@ -95,6 +99,23 @@ virtualenv venv -p python3
 
 ```bash
 . venv/bin/activate; pytest
+```
+
+### les commandes de build
+
+```
+make help
+
+dist                           package simulateur_ironcar as a wheel and a source distribution
+freeze_requirements            update the project dependencies based on setup.py declaration
+help                           provides cli help for this makefile (default)
+install_requirements_dev       install pip requirements for development
+install_requirements           install pip requirements based on requirements.txt
+lint                           run pylint
+tests                          run automatic tests
+tox                            run tests described in tox.ini for multi-python environments
+upload                         package and upload simulateur_ironcar on python package index
+venv                           build a virtual env for python 3 in ./venv
 ```
 
 ## License
